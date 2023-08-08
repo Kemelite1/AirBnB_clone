@@ -1,12 +1,21 @@
+#!/usr/bin/python3
 import uuid
 import datetime as dt
 
 class BaseModel:
-        def __init__(self) -> None:
+        def __init__(self,*args, **kwargs) -> None:
                 """this is the constructur function"""
-                self.id = str(uuid.uuid4())
-                self.created_at = dt.datetime.now()
-                self.updated_at = self.created_at
+                if kwargs:
+                        for key,val in kwargs.items():
+                                if key == '__class__': continue
+                                if key == 'created_at' or key == 'updated_at':
+                                        setattr(self,key,dt.datetime.fromisoformat(val))
+                                else:
+                                        setattr(self,key,val)
+                else:
+                        self.id = str(uuid.uuid4())
+                        self.created_at = dt.datetime.now()
+                        self.updated_at = self.created_at
         
         def __str__(self):
                 """the string representation of the class"""
