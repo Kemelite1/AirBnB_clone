@@ -1,9 +1,13 @@
 #!/usr/bin/python3
+"""
+base_model module
+"""
 import uuid
 from datetime import datetime
 from models import storage
 
 class BaseModel:
+        """base model class"""
         def __init__(self,*args, **kwargs) -> None:
                 """this is the constructur function"""
                 if kwargs:

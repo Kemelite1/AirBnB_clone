@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+console module
+"""
 import cmd
 from models.base_model import BaseModel
 from models import storage
