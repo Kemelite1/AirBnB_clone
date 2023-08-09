@@ -38,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.reload()
                 stored = storage.all()
                 try:
-                        val = stored[f"BaseModel.{arg[1]}"]
+                        val = stored["BaseModel.{}".format(arg[0])]
                 except KeyError:
                         print("** no instance found **")
                         return
@@ -73,12 +73,12 @@ class HBNBCommand(cmd.Cmd):
                 
                 stored = storage.all()
                 try:
-                        stored[f"BaseModel.{arg[1]}"]
+                        stored["BaseModel.{}".format(arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
                 
-                del stored[f"BaseModel.{arg[1]}"]
+                del stored["BaseModel.{}".format(arg[1])]
                 storage.save()
                 
         def do_all(self, cl):
@@ -107,7 +107,7 @@ class HBNBCommand(cmd.Cmd):
                         return        
                 stored = storage.all()
                 try:
-                        stored[f"BaseModel.{arg[1]}"]
+                        stored["BaseModel.{}".format(arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
@@ -118,7 +118,7 @@ class HBNBCommand(cmd.Cmd):
                         print("** value missing **")
                         return
                 try:                       
-                        val = stored[f"BaseModel.{arg[1]}"]
+                        val = stored["BaseModel.{}".format(arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
