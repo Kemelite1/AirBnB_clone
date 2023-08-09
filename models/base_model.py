@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import uuid
-import datetime as dt
+from datetime import datetime
 from models import storage
 
 class BaseModel:
@@ -10,12 +10,12 @@ class BaseModel:
                         for key,val in kwargs.items():
                                 if key == '__class__': continue
                                 if key == 'created_at' or key == 'updated_at':
-                                        setattr(self,key,dt.datetime.fromisoformat(val))
+                                        setattr(self,key,datetime.fromisoformat(val))
                                 else:
                                         setattr(self,key,val)
                 else:
                         self.id = str(uuid.uuid4())
-                        self.created_at = dt.datetime.now()
+                        self.created_at = datetime.now()
                         self.updated_at = self.created_at
                         storage.new(self)
         
@@ -25,7 +25,7 @@ class BaseModel:
 
         def save(self):
                 """updates the updated_at attribute of the class"""
-                self.updated_at = dt.datetime.now()
+                self.updated_at = datetime.now()
                 storage.save()
         
         def to_dict(self):
