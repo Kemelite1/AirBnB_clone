@@ -28,15 +28,9 @@ class FileStorage:
                         with open(self.__file_path, 'r') as f:
                                 obj = json.load(f)
                                 obj = {key:self.classes()(**val) for key, val in obj.items()}
-                                # for key,val in obj.items():
-                                #         cl = val["__class__"]
-                                #         FileStorage.__objects[key] = cl(**val)
                                 FileStorage.__objects = obj
-                                # print(obj)
-                                # print(FileStorage.__objects)
-                                # self.__objects = obj
-                                # print(self.__objects)
-                else:return
+                else:
+                        return
                 
         def classes(self):
                 """returns the class so it can be called somwhere else"""
