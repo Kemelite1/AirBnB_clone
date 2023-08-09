@@ -8,9 +8,8 @@ class User(BaseModel):
         """the user class"""
         def __init__(self, *args, **kwargs) -> None:
                 super().__init__(*args, **kwargs)
-
-        email = ''
-        password = ''
-        first_name = ''
-        last_name = ''
+                self.email = ''
+                self.password = ''
+                self.first_name = ''
+                self.last_name = ''
         
