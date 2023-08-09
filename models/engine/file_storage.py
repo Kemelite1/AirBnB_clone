@@ -30,13 +30,18 @@ class FileStorage:
                 if os.path.exists(self.__file_path):
                         with open(self.__file_path, 'r') as f:
                                 obj = json.load(f)
-                                obj = {key:self.classes()(**val) for key, val in obj.items()}
+                                obj = {key:self.classes(val['__class__'])(**val) for key, val in obj.items()}
                                 FileStorage.__objects = obj
                 else:
                         return
                 
-        def classes(self):
+        def classes(self, class_):
                 """returns the class so it can be called somwhere else"""
                 from models.base_model import BaseModel
-                cl = BaseModel
-                return cl 
+                from models.user import User
+                
+                cl = {'BaseModel': BaseModel,
+                      'User': User}
+                if class_ in cl:
+                        return cl[class_]
+                

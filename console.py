@@ -5,22 +5,30 @@ console module
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
 
 class HBNBCommand(cmd.Cmd):
         '''
         Contains the entry point of the command interpreter.
         '''
         prompt = "(hbnb) "
-        
+
+        cl = {'User': User, 'BaseModel': BaseModel}
+        def ccr(self, cll):
+                """returns a class"""
+                if cll in self.cl:
+                        return self.cl[cll]
+                
         def do_create(self, command):
                 """the create command is to create a new class instance"""
                 if not command:
                         print("** class name missing **")
-                elif command == "BaseModel":
-                        model = BaseModel()
+                        return
+                if command in self.cl:
+                        model = self.ccr(command)()
                         print(model.id)
                         model.save()
-                elif command != "BaseModel":
+                else:
                         print("** class doesn't exist **")
                 
         def do_show(self, *args):
@@ -34,14 +42,14 @@ class HBNBCommand(cmd.Cmd):
                 elif lent == 1:
                         print("** instance id missing **")
                         return
-                elif arg[0] != "BaseModel":
+                elif arg[0] not in self.cl:
                         print("** class doesn't exist **")
                         return
                 
                 storage.reload()
                 stored = storage.all()
                 try:
-                        val = stored["BaseModel.{}".format(arg[1])]
+                        val = stored["{}.{}".format(arg[0],arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
@@ -70,28 +78,29 @@ class HBNBCommand(cmd.Cmd):
                 elif lent == 1:
                         print("** instance id missing **")
                         return
-                elif arg[0] != "BaseModel":
+                elif arg[0] not in self.cl:
                         print("** class doesn't exist **")
                         return
                 
                 stored = storage.all()
                 try:
-                        stored["BaseModel.{}".format(arg[1])]
+                        stored["{}.{}".format(arg[0],arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
                 
-                del stored["BaseModel.{}".format(arg[1])]
+                del stored["{}.{}".format(arg[0],arg[1])]
                 storage.save()
                 
         def do_all(self, cl):
                 """command prints out all existing model instaces"""
-                if cl != "BaseModel":
+                if cl not in self.cl:
                         print("** class doesn't exist **")
                         return
                 stored = storage.all()
                 for val in stored.values():
-                        print(val)  
+                        if type(val).__name__ == cl:
+                                print(val)  
         
         def do_update(self, *args):
                 """command helps you add updates to an existing model instance"""
@@ -105,12 +114,12 @@ class HBNBCommand(cmd.Cmd):
                 elif lent == 1:
                         print("** instance id missing **")
                         return
-                elif arg[0] != 'BaseModel':
+                elif arg[0] not in self.cl:
                         print("** class doesn't exist **")
                         return        
                 stored = storage.all()
                 try:
-                        stored["BaseModel.{}".format(arg[1])]
+                        stored["{}.{}".format(arg[0],arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
@@ -121,7 +130,7 @@ class HBNBCommand(cmd.Cmd):
                         print("** value missing **")
                         return
                 try:                       
-                        val = stored["BaseModel.{}".format(arg[1])]
+                        val = stored["{}.{}".format(arg[0],arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
