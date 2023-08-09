@@ -14,7 +14,7 @@ class FileStorage:
         
         def new(self, obj):
                 """add a new object to the __object attribute"""
-                self.__objects[f"{type(obj).__name__}.{obj.id}"] = obj
+                self.__objects["{}.{}".format(type(obj).__name__,obj.id)] = obj
                 
         def save(self):
                 """save the objects to a json file"""
