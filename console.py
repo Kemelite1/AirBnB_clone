@@ -41,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.reload()
                 stored = storage.all()
                 try:
-                        val = stored["BaseModel.{}".format(arg[0])]
+                        val = stored["BaseModel.{}".format(arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
