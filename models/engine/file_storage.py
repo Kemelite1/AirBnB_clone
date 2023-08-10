@@ -4,13 +4,7 @@ file storage module
 """
 import json
 import os
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
+
 
 class FileStorage:
     """CLASS"""
@@ -24,7 +18,7 @@ class FileStorage:
     def new(self, obj):
         """add a new object to the __object attribute"""
         self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
-        
+
     def save(self):
         """save the objects to a json file"""
         with open(self.__file_path , "w") as f:
@@ -49,4 +43,3 @@ class FileStorage:
               'User': User}
         if class_ in cl:
             return cl[class_]
-            
