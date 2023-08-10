@@ -5,7 +5,18 @@ the user model
 from models.base_model import BaseModel
 
 class User(BaseModel):
-        """the user class"""
+        """the User class.
+
+        Attributes of User class:
+
+            email(str): User's email.
+
+            password(str): User's password.
+
+            first_name(str): User's first name
+
+            last_name(str): User's last name.
+        """
         def __init__(self, *args, **kwargs) -> None:
                 super().__init__(*args, **kwargs)
                 self.email = ''
