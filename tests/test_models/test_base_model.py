@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime
 from models import storage
 from models.base_model import BaseModel
+import time
 # import pycodestyle
 
 
@@ -42,11 +43,12 @@ class TestBaseModel(unittest.TestCase):
         bm = BaseModel()
         up_old = bm.updated_at
         cr_old = bm.created_at
+        time.sleep(2)
         bm.save()
         up_new = bm.updated_at
         cr_new = bm.created_at
         self.assertEqual(up_old, cr_old)
-        self.assertEqual(up_new, cr_new)
+        self.assertNotEqual(up_new, cr_new)
 
     def test_to_dict(self):
         """"checks the behaviour of the to_dict method of the BaseModel"""
