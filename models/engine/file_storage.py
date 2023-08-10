@@ -37,7 +37,7 @@ class FileStorage:
                         with open(self.__file_path, 'r') as f:
                                 obj = json.load(f)
                                 obj = {key:self.classes(val['__class__'])(**val) for key, val in obj.items()}
-                                FileStorage.__objects = obj
+                                self.__objects = obj
                 else:
                         return
                 
