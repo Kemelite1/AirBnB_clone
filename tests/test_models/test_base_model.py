@@ -2,12 +2,8 @@
 """unittest for the BaseModel class"""
 
 import unittest
-import os
-import uuid
-import json
 from datetime import datetime
 from models import storage
-from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 import pycodestyle
 
