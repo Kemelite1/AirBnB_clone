@@ -5,9 +5,9 @@ import unittest
 import os
 import uuid
 import json
-from datetime import datetime
-ffrom models import storage
-from models.engine.file_storage import FileStorage
+import datetime
+from models import storage
+# from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 
 class TestBaseModel(unittest.TestCase):
@@ -17,8 +17,8 @@ class TestBaseModel(unittest.TestCase):
         """checking BaseModel when instiantied with no arguments"""
         bm = BaseModel()
         self.assertIsNotNone(bm.id)
-        self.assertIsInstance(bm.created_at, dt.datetime)
-        self.assertIsInstance(bm.updated_at, dt.datetime)
+        self.assertIsInstance(bm.created_at, datetime.datetime)
+        self.assertIsInstance(bm.updated_at, datetime.datetime)
         self.assertEqual(bm.created_at, bm.updated_at)
         self.assertIn(bm, storage.all().values())
 
@@ -36,7 +36,7 @@ class TestBaseModel(unittest.TestCase):
         bm = BaseModel()
         bm.id = "test_id"
         bm.created_at = datetime.datetime(2023, 9, 8)
-        bm. updated_at = datetime.datetime(2023, 8, 9)
+        bm.updated_at = datetime.datetime(2023, 8, 9)
         expected_str = "[BaseModel] (test_id) {'id': 'test_id', 'created_at': '2023-09-08 00:00:00', 'updated_at': '2023-09-09 00:00:00'}"
         self.assertEqual(str(bm), expected_str)
 
