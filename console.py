@@ -3,9 +3,14 @@
 console module
 """
 import cmd
-from models.base_model import BaseModel
 from models import storage
 from models.user import User
+from models.base_model import BaseModel
+from models.state import State
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
 
 class HBNBCommand(cmd.Cmd):
         '''
@@ -13,7 +18,14 @@ class HBNBCommand(cmd.Cmd):
         '''
         prompt = "(hbnb) "
 
-        cl = {'User': User, 'BaseModel': BaseModel}
+        cl = {'BaseModel': BaseModel, 
+              'User': User,
+              'State': State,
+              'Place': Place,
+              'Review': Review,
+              'City': City,
+              'Amenity': Amenity}
+
         def ccr(self, cll):
                 """returns a class"""
                 if cll in self.cl:

@@ -4,6 +4,9 @@ from models.base_model import BaseModel
 
 class Review(BaseModel):
     """This is a Review class that inherits from BaseModel"""
-    place_id = ""
-    user_id = ""
-    tetx = ""
+    
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.place_id = ""
+        self.user_id = ""
+        self.tetx = ""
