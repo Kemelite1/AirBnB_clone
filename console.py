@@ -104,6 +104,15 @@ class HBNBCommand(cmd.Cmd):
                 del stored["{}.{}".format(arg[0],arg[1])]
                 storage.save()
                 
+        def precmd(self, arg):
+            d = arg.split('.')
+            if len(d) > 1:
+                command = d[0]
+                method = d[1]
+                return '{} {}'.format(method[:-2],command)
+            else:
+                return arg
+            
         def do_all(self, cl):
                 """command prints out all existing model instaces"""
                 if cl not in self.cl:
