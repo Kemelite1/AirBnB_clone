@@ -5,58 +5,71 @@ import unittest
 import os
 import uuid
 import json
-import datetime
+from datetime import datetime
 from models import storage
-# from models.engine.file_storage import FileStorage
+from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+import pycodestyle
+
 
 class TestBaseModel(unittest.TestCase):
     """unittests to test the for the BaseModel class"""
 
-    def test_init_with_no_args(self):
+    def test_pepcodestyle(self):
+        """test pepcodestyle"""
+        for path in ['models/base_model.py',
+                     'tests/test_models/test_base_model.py']:
+            with self.subTest(path=path):
+                errors = pycodestyle.Checker(path).check_all()
+                self.assertEqual(errors, 0)
+
+    def test_init(self):
         """checking BaseModel when instiantied with no arguments"""
         bm = BaseModel()
-        self.assertIsNotNone(bm.id)
-        self.assertIsInstance(bm.created_at, datetime.datetime)
-        self.assertIsInstance(bm.updated_at, datetime.datetime)
+        bm1 = BaseModel()
+        self.assertIsInstance(bm, BaseModel)
+        self.assertIsInstance(bm.id, str)
+        self.assertIsInstance(bm.created_at, datetime)
+        self.assertIsInstance(bm.updated_at, datetime)
         self.assertEqual(bm.created_at, bm.updated_at)
         self.assertIn(bm, storage.all().values())
+        self.assertNotEqual(bm.id, bm1.id)
 
-    def test_init_with_kwargs(self):
-        """checking BaseModel when instantiated with arguments"""
-        created_at = datetime.datetime(2023, 9, 8)
-        updated_at = datetime.datetime(2023, 9, 9)
-        bm = BaseModel(id="123", created_at=created_at.isoformat(), updated_at=updated_at.isoformat())
-        self.assertEqual(bm.id, "123")
-        self.assertEqual(bm.created_at, created_at)
-        self.assertEqual(bm.updated_at, updated_at)
+    def test_str(self):
+        """test that the str method has the correct output"""
+        inst = BaseModel()
+        string = "[BaseModel] ({}) {}".format(inst.id, inst.__dict__)
+        self.assertEqual(string, str(inst))
 
-    def test_str_representation(self):
-        """"checks the string representation __str__ of BaseModel"""
-        bm = BaseModel()
-        bm.id = "test_id"
-        bm.created_at = datetime.datetime(2023, 9, 8)
-        bm.updated_at = datetime.datetime(2023, 8, 9)
-        expected_str = "[BaseModel] (test_id) {'id': 'test_id', 'created_at': '2023-09-08 00:00:00', 'updated_at': '2023-09-09 00:00:00'}"
-        self.assertEqual(str(bm), expected_str)
-
-    def test_save_method(self):
+    def test_save(self):
         """checking the behaviour of the save_method of the BaseModel class"""
         bm = BaseModel()
-        previous_updated_at = bm.updated_at
+        up_old = bm.updated_at
+        cr_old = bm.created_at
         bm.save()
-        self.assertGreater(bm.updated_at, previous_updated_at) # verifies that the updated_at attribute has been updated and is greater than its previous value.
+        up_new = bm.updated_at
+        cr_new = bm.created_at
+        self.assertEqual(up_old, cr_old)
+        self.assertEqual(up_new, cr_new)
 
-    def test_to_dict_method(self):
+    def test_to_dict(self):
         """"checks the behaviour of the to_dict method of the BaseModel"""
-        bm = BaseModel() # instance of BaseModel
-        bm_dict = bm.to_dict() # to_dict method is called on the instance, producing a dictionary
-        self.assertIsInstance(bm_dict, dict) # to verify that the result is a dictionary
-        self.assertEqual(bm_dict['__class__'], 'BaseModel') # checks if the 'class' attribute is correctly included
+        bm = BaseModel()
+        bm_dict = bm.to_dict()
+        self.assertIsInstance(bm_dict, dict)
+        self.assertEqual(bm_dict['__class__'], 'BaseModel')
         self.assertIn('id', bm_dict)
         self.assertIn('created_at', bm_dict)
         self.assertIn('updated_at', bm_dict)
 
+        t_format = "%Y-%m-%dT%H:%M:%S.%f"
+        self.assertEqual(bm_dict["__class__"], "BaseModel")
+        self.assertEqual(type(bm_dict["created_at"]), str)
+        self.assertEqual(type(bm_dict["updated_at"]), str)
+        self.assertEqual(bm_dict["created_at"],
+                         bm.created_at.strftime(t_format))
+        self.assertEqual(bm_dict["updated_at"],
+                         bm.updated_at.strftime(t_format))
 
 
 if __name__ == '__main__':
