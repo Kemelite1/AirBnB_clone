@@ -115,6 +115,10 @@ class HBNBCommand(cmd.Cmd):
         def precmd(self, arg):
             if len(arg.split('.')) > 1:
                 cmds = self.cmd_str_format(arg)
+                cmd_prms = cmds[2][2:-2]
+                cmd_prms = cmd_prms.split()
+                if len(cmd_prms) == 1:
+                    return '{} {} {}'.format(cmds[0],cmds[1], cmd_prms[0])
                 return '{} {}'.format(cmds[0],cmds[1])
             else:
                 return arg
@@ -130,6 +134,7 @@ class HBNBCommand(cmd.Cmd):
                                 print(val)
         
         def do_count(self, arg):
+            """prints the number of instancese of a particular class"""
             if arg not in self.cl:
                     print("** class doesn't exist **")
                     return
