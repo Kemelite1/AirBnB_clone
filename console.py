@@ -104,12 +104,18 @@ class HBNBCommand(cmd.Cmd):
                 del stored["{}.{}".format(arg[0],arg[1])]
                 storage.save()
                 
+        def cmd_str_format(self, strng):
+            dot_ind = strng.index('.')
+            brkt_ind = strng.index('(')
+            cl_name = strng[:dot_ind]
+            cmd_name = strng[dot_ind:brkt_ind]
+            brkt = strng[brkt_ind:]
+            return [cmd_name[1:], cl_name, brkt]
+        
         def precmd(self, arg):
-            d = arg.split('.')
-            if len(d) > 1:
-                command = d[0]
-                method = d[1]
-                return '{} {}'.format(method[:-2],command)
+            if len(arg.split('.')) > 1:
+                cmds = self.cmd_str_format(arg)
+                return '{} {}'.format(cmds[0],cmds[1])
             else:
                 return arg
             
