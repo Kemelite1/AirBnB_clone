@@ -8,4 +8,7 @@ class State(BaseModel):
     Attribute:
         name(str): The name of the state
     """
-    name = ""
+    
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.name = ""

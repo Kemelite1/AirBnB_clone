@@ -3,9 +3,14 @@
 console module
 """
 import cmd
-from models.base_model import BaseModel
 from models import storage
 from models.user import User
+from models.base_model import BaseModel
+from models.state import State
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
 
 class HBNBCommand(cmd.Cmd):
         '''
@@ -13,7 +18,14 @@ class HBNBCommand(cmd.Cmd):
         '''
         prompt = "(hbnb) "
 
-        cl = {'User': User, 'BaseModel': BaseModel}
+        cl = {'BaseModel': BaseModel, 
+              'User': User,
+              'State': State,
+              'Place': Place,
+              'Review': Review,
+              'City': City,
+              'Amenity': Amenity}
+
         def ccr(self, cll):
                 """returns a class"""
                 if cll in self.cl:
@@ -92,6 +104,25 @@ class HBNBCommand(cmd.Cmd):
                 del stored["{}.{}".format(arg[0],arg[1])]
                 storage.save()
                 
+        def cmd_str_format(self, strng):
+            dot_ind = strng.index('.')
+            brkt_ind = strng.index('(')
+            cl_name = strng[:dot_ind]
+            cmd_name = strng[dot_ind:brkt_ind]
+            brkt = strng[brkt_ind:]
+            return [cmd_name[1:], cl_name, brkt]
+        
+        def precmd(self, arg):
+            if len(arg.split('.')) > 1:
+                cmds = self.cmd_str_format(arg)
+                cmd_prms = cmds[2][2:-2]
+                cmd_prms = cmd_prms.split()
+                if len(cmd_prms) == 1:
+                    return '{} {} {}'.format(cmds[0],cmds[1], cmd_prms[0])
+                return '{} {}'.format(cmds[0],cmds[1])
+            else:
+                return arg
+            
         def do_all(self, cl):
                 """command prints out all existing model instaces"""
                 if cl not in self.cl:
@@ -100,7 +131,15 @@ class HBNBCommand(cmd.Cmd):
                 stored = storage.all()
                 for val in stored.values():
                         if type(val).__name__ == cl:
-                                print(val)  
+                                print(val)
+        
+        def do_count(self, arg):
+            """prints the number of instancese of a particular class"""
+            if arg not in self.cl:
+                    print("** class doesn't exist **")
+                    return
+            stored = [n for n in storage.all().values() if type(n).__name__ == arg]
+            print(len(stored))
         
         def do_update(self, *args):
                 """command helps you add updates to an existing model instance"""
