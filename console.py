@@ -127,7 +127,14 @@ class HBNBCommand(cmd.Cmd):
                 stored = storage.all()
                 for val in stored.values():
                         if type(val).__name__ == cl:
-                                print(val)  
+                                print(val)
+        
+        def do_count(self, arg):
+            if arg not in self.cl:
+                    print("** class doesn't exist **")
+                    return
+            stored = [n for n in storage.all().values() if type(n).__name__ == arg]
+            print(len(stored))
         
         def do_update(self, *args):
                 """command helps you add updates to an existing model instance"""
