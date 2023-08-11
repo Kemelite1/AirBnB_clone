@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.city import City
 from models.place import Place
 from models.review import Review
+import re
 
 class HBNBCommand(cmd.Cmd):
         '''
@@ -68,17 +69,6 @@ class HBNBCommand(cmd.Cmd):
                 
                 print(val)
                 
-                
-                # elif arg[0] == "BaseModel":
-                #         stored = storage.all()
-                #         for val in stored.values():
-                #                 try:
-                                        
-                                #     if val.id == arg[1]:
-                                #         print(val)
-                                #         return
-
-                                    
         def do_destroy(self, *args):
                 """comand destroys the given model instance"""
                 arg = args[0].split(' ')
@@ -115,10 +105,17 @@ class HBNBCommand(cmd.Cmd):
         def precmd(self, arg):
             if len(arg.split('.')) > 1:
                 cmds = self.cmd_str_format(arg)
-                cmd_prms = cmds[2][2:-2]
+                cmd_prms = cmds[2][1:-1]
                 cmd_prms = cmd_prms.split()
                 if len(cmd_prms) == 1:
-                    return '{} {} {}'.format(cmds[0],cmds[1], cmd_prms[0])
+                    inst_id = cmd_prms[0][1:-1]
+                    return '{} {} {}'.format(cmds[0],cmds[1], inst_id)
+                if len(cmd_prms) == 3:
+                    pt = r'[",\']'
+                    inst_id = re.sub(pt, '',cmd_prms[0])
+                    inst_attr_name = re.sub(pt, '',cmd_prms[1])
+                    inst_attr_val = re.sub(pt, '',cmd_prms[2])
+                    return '{} {} {} {} {}'.format(cmds[0],cmds[1], inst_id, inst_attr_name, inst_attr_val)
                 return '{} {}'.format(cmds[0],cmds[1])
             else:
                 return arg
