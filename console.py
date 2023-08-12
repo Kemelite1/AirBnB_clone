@@ -95,7 +95,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.save()
         def rem_chars(self, arg):
             clean_list = []
-            rem = '()"\'.,'
+            rem = '()"\'.,}{:'
             for ar in arg:
                 clean_str = ar
                 for r in rem:
@@ -125,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
             if len(cmds) > 1:
                 cmd_prms = cmds[2]
                 cmd_prms = cmd_prms.split()
-                
+                                
                 if cmds[0] == 'show' or cmds[0] == 'destroy':
                     inst_id = cmd_prms[0] if cmd_prms else ''
                     if len(cmds) == 2:
@@ -133,16 +133,28 @@ class HBNBCommand(cmd.Cmd):
                     return '{} {} {}'.format(cmds[0],cmds[1], inst_id)
                 
                 if cmds[0] == 'update':
+                    new_dict = ''
                     nw = [cmds[0], cmds[1]]
                     for cm in cmd_prms:
                         nw.append(cm)
+                    new_arr = []
+                    for i in range(len(nw[3:])):
+                        new_arr.append(nw[3 + i])
+                    try:
+                        new_dict = {new_arr[n]: new_arr[n + 1] for n in range(0,len(new_arr), 2)}
+                    except IndexError:
+                        pass
+ 
                     if len(nw) == 2:
                         return '{} {}'.format(nw[0], nw[1])
                     if len(nw) == 3:
                         return '{} {} {}'.format(nw[0], nw[1], nw[2])
                     elif len(nw) == 4:
                         return '{} {} {} {}'.format(nw[0], nw[1], nw[2], nw[3])
-                    return '{} {} {} {} {}'.format(nw[0], nw[1], nw[2], nw[3], nw[4])
+                    elif len(nw) == 5:
+                        return '{} {} {} {} {}'.format(nw[0], nw[1], nw[2], nw[3], nw[4])
+                    return '{} {} {} {}'.format(nw[0], nw[1], nw[2], new_dict)
+
                 return '{} {}'.format(cmds[0],cmds[1])
             else:
                 return arg
@@ -169,8 +181,16 @@ class HBNBCommand(cmd.Cmd):
                 """command helps you add updates to an existing model instance"""
                 arg = args[0].split()
                 arg = [arg for arg in arg if arg != '']
+                try:    
+                    dic = eval(''.join(arg[2:]))
+                except TypeError:
+                    pass
+                except NameError:
+                    pass
+                except SyntaxError:
+                    pass
+                
                 lent = len(arg)
-
                 if lent == 0:
                         print("** class name missing **")
                         return
@@ -180,23 +200,26 @@ class HBNBCommand(cmd.Cmd):
                 elif arg[0] not in self.cl:
                         print("** class doesn't exist **")
                         return        
-                stored = storage.all()
-                # try:
-                #         stored["{}.{}".format(arg[0],arg[1])]
-                # except KeyError:
-                #         print("** no instance found **")
-                #         return
                 if lent == 2:
                         print("** attribute name missing **")
                         return
                 elif lent == 3:
                         print("** value missing **")
                         return
+                stored = storage.all()
                 try:                       
                         val = stored["{}.{}".format(arg[0],arg[1])]
                 except KeyError:
                         print("** no instance found **")
                         return
+                if lent > 4:
+                    try:
+                        for key,v in dic.items():
+                            setattr(val, key, v)
+                        val.save()
+                        return
+                    except UnboundLocalError:
+                        pass
                 key = arg[2]
                 v = arg[3]
                 setattr(val, key, v)
