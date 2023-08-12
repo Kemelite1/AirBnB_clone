@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.city import City
 from models.place import Place
 from models.review import Review
+import re
 
 class HBNBCommand(cmd.Cmd):
         '''
@@ -68,17 +69,6 @@ class HBNBCommand(cmd.Cmd):
                 
                 print(val)
                 
-                
-                # elif arg[0] == "BaseModel":
-                #         stored = storage.all()
-                #         for val in stored.values():
-                #                 try:
-                                        
-                                #     if val.id == arg[1]:
-                                #         print(val)
-                                #         return
-
-                                    
         def do_destroy(self, *args):
                 """comand destroys the given model instance"""
                 arg = args[0].split(' ')
@@ -103,22 +93,56 @@ class HBNBCommand(cmd.Cmd):
                 
                 del stored["{}.{}".format(arg[0],arg[1])]
                 storage.save()
-                
+        def rem_chars(self, arg):
+            clean_list = []
+            rem = '()"\'.,'
+            for ar in arg:
+                clean_str = ar
+                for r in rem:
+                    clean_str = clean_str.replace(r, '')
+                clean_list.append(clean_str)
+            return clean_list
+        
         def cmd_str_format(self, strng):
-            dot_ind = strng.index('.')
-            brkt_ind = strng.index('(')
-            cl_name = strng[:dot_ind]
-            cmd_name = strng[dot_ind:brkt_ind]
-            brkt = strng[brkt_ind:]
-            return [cmd_name[1:], cl_name, brkt]
+            """returns an array of commands to be passed to precmd"""
+            try:
+                dot_ind = strng.index('.')
+                cl_name = strng[:dot_ind]
+            except ValueError:
+                return [strng]
+            try:
+                brkt_ind = strng.index('(')
+                cmd_name = strng[dot_ind:brkt_ind]
+                brkt = strng[brkt_ind:]
+            except ValueError:
+                return [cl_name]
+            d = [cmd_name[1:], cl_name, brkt]
+            return self.rem_chars(d)
         
         def precmd(self, arg):
-            if len(arg.split('.')) > 1:
-                cmds = self.cmd_str_format(arg)
-                cmd_prms = cmds[2][2:-2]
+            """Pre-process a command line argument"""
+            cmds = self.cmd_str_format(arg)
+            if len(cmds) > 1:
+                cmd_prms = cmds[2]
                 cmd_prms = cmd_prms.split()
-                if len(cmd_prms) == 1:
-                    return '{} {} {}'.format(cmds[0],cmds[1], cmd_prms[0])
+                
+                if cmds[0] == 'show' or cmds[0] == 'destroy':
+                    inst_id = cmd_prms[0] if cmd_prms else ''
+                    if len(cmds) == 2:
+                        return '{} {} {}'.format(cmds[0],cmds[1])
+                    return '{} {} {}'.format(cmds[0],cmds[1], inst_id)
+                
+                if cmds[0] == 'update':
+                    nw = [cmds[0], cmds[1]]
+                    for cm in cmd_prms:
+                        nw.append(cm)
+                    if len(nw) == 2:
+                        return '{} {}'.format(nw[0], nw[1])
+                    if len(nw) == 3:
+                        return '{} {} {}'.format(nw[0], nw[1], nw[2])
+                    elif len(nw) == 4:
+                        return '{} {} {} {}'.format(nw[0], nw[1], nw[2], nw[3])
+                    return '{} {} {} {} {}'.format(nw[0], nw[1], nw[2], nw[3], nw[4])
                 return '{} {}'.format(cmds[0],cmds[1])
             else:
                 return arg
@@ -143,7 +167,7 @@ class HBNBCommand(cmd.Cmd):
         
         def do_update(self, *args):
                 """command helps you add updates to an existing model instance"""
-                arg = args[0].split(' ')
+                arg = args[0].split()
                 arg = [arg for arg in arg if arg != '']
                 lent = len(arg)
 
@@ -157,11 +181,11 @@ class HBNBCommand(cmd.Cmd):
                         print("** class doesn't exist **")
                         return        
                 stored = storage.all()
-                try:
-                        stored["{}.{}".format(arg[0],arg[1])]
-                except KeyError:
-                        print("** no instance found **")
-                        return
+                # try:
+                #         stored["{}.{}".format(arg[0],arg[1])]
+                # except KeyError:
+                #         print("** no instance found **")
+                #         return
                 if lent == 2:
                         print("** attribute name missing **")
                         return
@@ -185,6 +209,11 @@ class HBNBCommand(cmd.Cmd):
         def do_quit(self, line):
                 """quit command to exit the program"""
                 return True
+
+        def emptyline(self) -> bool:
+            """print nothing"""
+            pass
+
         
         
         
