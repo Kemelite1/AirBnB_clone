@@ -12,3 +12,11 @@ class TestHBNBCommand(unittest.TestCase):
     """unittest for the HBNB command line interpreter"""
     def setup(self):
         self.console = HBNBCommand()
+
+    def test_quit(self):
+        """Testing the quit command"""
+        with patch('builtins.input', return_value="quit"):
+            self.assertTrue(self.console.onecmd("quit"))
+
+if __name__ == '__main__':
+    unittest.main()
