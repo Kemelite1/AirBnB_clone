@@ -11,8 +11,7 @@ from console import HBNBCommand
 
 class TestHBNBCommand(unittest.TestCase):
     """unittest for the HBNB command line interpreter"""
-    def setup(self):
-        self.console = HBNBCommand()
+    console = HBNBCommand()
 
     def test_quit(self):
         """Testing the quit command"""
