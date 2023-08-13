@@ -1,5 +1,9 @@
 This is a team project to build a clone of [AirBnB](https://www.airbnb.com/).
 
+## Installation
+```
+git clone https://github.com/Kemelite1/AirBnB_clone.git
+```
 ## Usage
 * Start the console in interactive mode:
 ```
@@ -21,3 +25,6 @@ EOF  all  count  create  destroy  help  quit  show  update
 (hbnb) quit
 $
 ```
+* Authors
++ kumdan job
++ Osi, Keme
